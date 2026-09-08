@@ -11,7 +11,7 @@ def write_file(path, content):
 def generate_pcb_app():
     print("Initializing Prompt-to-PCB Android App project structure...")
 
-    # 1. Root build.gradle (Updated to modern plugin syntax to avoid repo conflicts)
+    # 1. Root build.gradle
     write_file("build.gradle", """
 plugins {
     id 'com.android.application' version '8.1.4' apply false
@@ -39,7 +39,7 @@ rootProject.name = "PCBGeneratorApp"
 include ':app'
 """)
 
-    # 3. app/build.gradle
+    # 3. app/build.gradle (Updated with clean, stable, non-conflicting dependency versions)
     write_file("app/build.gradle", """
 plugins {
     id 'com.android.application'
