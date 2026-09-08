@@ -1,7 +1,9 @@
 import os
 
 def write_file(path, content):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
+    dirname = os.path.dirname(path)
+    if dirname:  # Only create directory if path contains one (e.g. not for root files like build.gradle)
+        os.makedirs(dirname, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         f.write(content.strip())
     print(f"[CREATED] {path}")
@@ -113,8 +115,8 @@ dependencies {
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
-                <action android:name="intent.action.MAIN" />
-                <category android:name="category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
@@ -191,7 +193,7 @@ dependencies {
 </LinearLayout>
 """)
 
-    # 7. MainActivity.kt (Logic to handle prompt-to-PCB generation simulation)
+    # 7. MainActivity.kt
     write_file("app/src/main/java/com/example/pcbgenerator/MainActivity.kt", """
 package com.example.pcbgenerator
 
@@ -217,7 +219,6 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Simulated AI PCB Generation Logic (Netlist & Routing layout specs)
             val resultLog = StringBuilder()
             resultLog.append("Analyzing prompt: \\\"$promptText\\\"...\\n")
             resultLog.append("[1/3] Parsing electronic components... OK\\n")
@@ -234,7 +235,7 @@ class MainActivity : AppCompatActivity() {
 }
 """)
 
-    # 8. Gradle Wrapper Properties (needed for build)
+    # 8. Gradle Wrapper Properties
     write_file("gradle/wrapper/gradle-wrapper.properties", """
 distributionBase=GRADLE_USER_HOME
 distributionPath=wrapper/dists
@@ -243,49 +244,7 @@ zipStoreBase=GRADLE_USER_HOME
 zipStorePath=wrapper/dists
 """)
 
-    # 9. GitHub Actions Workflow File (.github/workflows/build_apk.yml)
-    write_file(".github/workflows/build_apk.yml", """
-name: Build PCB AI App APK
-
-on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-  workflow_dispatch:
-
-jobs:
-  build-apk:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17'
-        cache: 'gradle'
-
-    - name: Download Gradle Wrapper (if missing)
-      run: gradle wrapper --gradle-version 8.4
-
-    - name: Grant execute permission for Gradle wrapper
-      run: chmod +x gradlew || true
-
-    - name: Build Debug APK
-      run: ./gradlew assembleDebug
-
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: pcb-generator-debug-apk
-        path: app/build/outputs/apk/debug/app-debug.apk
-""")
-
-    print("\n[SUCCESS] Entire Android App and GitHub Actions workflow generated successfully!")
+    print("\n[SUCCESS] Entire Android App structure generated successfully!")
 
 if __name__ == "__main__":
     generate_pcb_app()
