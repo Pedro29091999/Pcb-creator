@@ -23,14 +23,22 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
-        # cache: 'gradle'  <-- Removed to prevent checking for files that don't exist yet
 
     - name: Run Python Script to Scaffold Android App
       run: |
         python create_pcb_app.py
 
+    - name: Install System Gradle
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gradle
+
+    - name: Generate Gradle Wrapper
+      run: |
+        gradle wrapper --gradle-version 8.4
+
     - name: Grant execute permission for Gradle wrapper
-      run: chmod +x gradlew || true
+      run: chmod +x gradlew
 
     - name: Build Debug APK
       run: ./gradlew assembleDebug
