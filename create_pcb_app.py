@@ -9,7 +9,7 @@ def write_file(path, content):
     print(f"[CREATED] {path}")
 
 def generate_pcb_app():
-    print("Initializing Prompt-to-PCB Android App project structure with real API integration...")
+    print("Initializing Prompt-to-PCB Android App project structure...")
 
     # 1. Root build.gradle
     write_file("build.gradle", """
@@ -46,7 +46,7 @@ android.enableJetifier=true
 org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
 """)
 
-    # 4. app/build.gradle (Added OkHttp for real network generation requests)
+    # 4. app/build.gradle (Removed redundant org.json dependency)
     write_file("app/build.gradle", """
 plugins {
     id 'com.android.application'
@@ -88,11 +88,10 @@ dependencies {
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
-    implementation 'org.json:json:20231018'
 }
 """)
 
-    # 5. AndroidManifest.xml (With internet permissions for live model generation & storage access)
+    # 5. AndroidManifest.xml
     write_file("app/src/main/AndroidManifest.xml", """
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -125,7 +124,7 @@ dependencies {
 </resources>
 """)
 
-    # 7. Layout XML (Includes an API Key input field for live execution)
+    # 7. Layout XML
     write_file("app/src/main/res/layout/activity_main.xml", """
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -197,7 +196,7 @@ dependencies {
 </LinearLayout>
 """)
 
-    # 8. MainActivity.kt (Real API networking logic & file storage writer)
+    # 8. MainActivity.kt
     write_file("app/src/main/java/com/example/pcbgenerator/MainActivity.kt", """
 package com.example.pcbgenerator
 
@@ -281,7 +280,6 @@ class MainActivity : AppCompatActivity() {
                     val partsArr = contentObj.getJSONArray("parts")
                     val generatedText = partsArr.getJSONObject(0).getString("text")
 
-                    // Real file export step
                     val filename = "PCB_Blueprint_" + System.currentTimeMillis() + ".kicad_pcb"
                     val savedFile = saveFileToDownloads(filename, generatedText)
 
@@ -319,7 +317,7 @@ class MainActivity : AppCompatActivity() {
 }
 """)
 
-    print("\n[SUCCESS] Real API integrated Android App structure generated successfully!")
+    print("\n[SUCCESS] Android App structure generated successfully!")
 
 if __name__ == "__main__":
     generate_pcb_app()
