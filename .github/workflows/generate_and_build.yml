@@ -28,10 +28,11 @@ jobs:
       run: |
         python create_pcb_app.py
 
-    - name: Install System Gradle
+    - name: Install Modern Gradle 8.4
       run: |
-        sudo apt-get update
-        sudo apt-get install -y gradle
+        wget https://services.gradle.org/distributions/gradle-8.4-bin.zip
+        unzip -q gradle-8.4-bin.zip
+        echo "$PWD/gradle-8.4/bin" >> $GITHUB_PATH
 
     - name: Generate Gradle Wrapper
       run: |
