@@ -23,7 +23,7 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
-        cache: 'gradle'
+        # cache: 'gradle'  <-- Removed to prevent checking for files that don't exist yet
 
     - name: Run Python Script to Scaffold Android App
       run: |
